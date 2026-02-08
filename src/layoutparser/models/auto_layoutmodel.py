@@ -21,6 +21,7 @@ from .model_config import (
 from ..file_utils import (
     is_effdet_available,
     is_detectron2_available,
+    is_doclayout_yolo_available,
     is_paddle_available,
 )
 
@@ -45,6 +46,16 @@ if is_detectron2_available():
     ALL_AVAILABLE_BACKENDS[Detectron2LayoutModel.DETECTOR_NAME] = Detectron2LayoutModel
     for dataset_name in _detectron2_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(Detectron2LayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_doclayout_yolo_available():
+    from .doclayout_yolo.layoutmodel import DocLayoutYOLOLayoutModel
+    from .doclayout_yolo.catalog import MODEL_CATALOG as _doclayout_yolo_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[DocLayoutYOLOLayoutModel.DETECTOR_NAME] = DocLayoutYOLOLayoutModel
+    for dataset_name in _doclayout_yolo_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(DocLayoutYOLOLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_paddle_available():
@@ -90,8 +101,8 @@ def AutoLayoutModel(
     """
     if not is_lp_layout_model_config_any_format(config_path):
         raise ValueError(f"Invalid model config_path {config_path}")
-    
-    # Try to search for the model keywords 
+
+    # Try to search for the model keywords
     for backend_name in ALL_AVAILABLE_BACKENDS:
         if backend_name in config_path:
             return ALL_AVAILABLE_BACKENDS[backend_name](
@@ -101,8 +112,8 @@ def AutoLayoutModel(
                 extra_config=extra_config,
                 device=device,
             )
-    
-    # Try to search for the dataset keywords 
+
+    # Try to search for the dataset keywords
     for dataset_name in ALL_AVAILABLE_DATASETS:
         if dataset_name in config_path:
             return ALL_AVAILABLE_BACKENDS[ALL_AVAILABLE_DATASETS[dataset_name][0]](

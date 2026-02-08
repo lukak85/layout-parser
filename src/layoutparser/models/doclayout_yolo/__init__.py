@@ -12,12 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .. import is_doclayout_yolo_available
+from . import catalog as _UNUSED
 
-from .detectron2.layoutmodel import Detectron2LayoutModel
-from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
-from .effdet.layoutmodel import EfficientDetLayoutModel
-from .auto_layoutmodel import AutoLayoutModel
-
-if is_doclayout_yolo_available():
-    from .doclayout_yolo.layoutmodel import DocLayoutYOLOLayoutModel
+from .layoutmodel import DocLayoutYOLOLayoutModel
