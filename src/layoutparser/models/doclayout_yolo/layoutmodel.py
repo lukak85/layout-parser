@@ -15,7 +15,9 @@ import cv2
 import torch
 
 from doclayout_yolo import YOLOv10
-from .catalog import MODEL_CATALOG
+from torch.backends.mkl import verbose
+
+from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
 from ..base_layoutmodel import BaseLayoutModel
 from ...elements import Rectangle, TextBlock, Layout
 
@@ -28,7 +30,15 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
     DETECTOR_NAME = "doclayout_yolo"
     MODEL_CATALOG = MODEL_CATALOG
 
-    def __init__(self, model, imgsz=1024, conf=None, debug=False, label_map=None):
+    def __init__(
+        self,
+        model,
+        imgsz=1024,
+        conf=0.2,
+        debug=False,
+        label_map=None,
+        verbose=False,
+    ):
         self.device = (
             "cuda"
             if torch.cuda.is_available()
@@ -42,11 +52,19 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
 
         self.debug = debug
 
+        if label_map is None:
+            label_map = LABEL_MAP_CATALOG["PubLayNet"]
+        else:
+            label_map = LABEL_MAP_CATALOG[label_map]
+
         self.label_map = label_map
+
+        self.verbose = verbose
+
         self._create_model()
 
     def _create_model(self):
-        self.model = YOLOv10(self.model)  # load an official model
+        self.model = YOLOv10(self.model, verbose=self.verbose)  # load an official model
 
     def gather_output(self, yolo_result, image_id, img_w, img_h):
         coco_results = []
@@ -77,7 +95,7 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
         # for score, box, label in zip(scores, boxes, labels):
         for res in coco_results:
             score = res["score"]
-            label = res["category_id"]
+            label = self.label_map.get(res["category_id"], res["category_id"])
             box = res["bbox"]
 
             x_1, y_1, w, h = box

@@ -31,12 +31,16 @@ CONFIG_CATALOG = {
 # fmt: off
 LABEL_MAP_CATALOG = {
     "PubLayNet": {
-        0: "Text", 
-        1: "Title", 
-        2: "List", 
-        3: "Table", 
-        4: "Figure"
-    },
+        0: 'title',
+        1: 'plain text',
+        2: 'abandon',
+        3: 'figure',
+        4: 'figure_caption',
+        5: 'table',
+        6: 'table_caption',
+        7: 'table_footnote',
+        8: 'isolate_formula',
+        9: 'formula_caption'}
 }
 # fmt: on
 
