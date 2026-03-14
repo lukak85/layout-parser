@@ -14,6 +14,7 @@
 
 from .. import is_doclayout_yolo_available
 from .. import is_layoutlmv3_available
+from .. import is_dit_available
 
 from .detectron2.layoutmodel import Detectron2LayoutModel
 from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
@@ -24,3 +25,5 @@ if is_doclayout_yolo_available():
     from .doclayout_yolo.layoutmodel import DocLayoutYOLOLayoutModel
 if is_layoutlmv3_available():
     from .layoutlmv3.layoutmodel import LayoutLMv3LayoutModel
+if is_dit_available():
+    from .dit.layoutmodel import DiTLayoutModel

@@ -62,6 +62,13 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _layoutlmv3_available = False
 
+_dit_available = importlib.util.find_spec("detectron2") is not None
+try:
+    _dit_version = importlib_metadata.version("detectron2")
+    logger.debug(f"DiT version {_dit_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _dit_available = False
+
 _paddle_available = importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -137,6 +144,10 @@ def is_layoutlmv3_available():
     return _layoutlmv3_available
 
 
+def is_dit_available():
+    return _dit_available
+
+
 def is_paddle_available():
     return _paddle_available
 
@@ -179,6 +190,11 @@ LAYOUTLMV3_IMPORT_ERROR = """
 here.
 """
 
+DIT_IMPORT_ERROR = """
+{0} requires the detectron2 library but it was not found in your environment. TOOD - add installation instructions
+here.
+"""
+
 PADDLE_IMPORT_ERROR = """
 {0} requires the PaddlePaddle library but it was not found in your environment. Checkout the instructions on the
 installation page: https://github.com/PaddlePaddle/Paddle and follow the ones that match your environment.
@@ -205,6 +221,7 @@ BACKENDS_MAPPING = dict(
         ("detectron2", (is_detectron2_available, DETECTRON2_IMPORT_ERROR)),
         ("doclayout_yolo", (is_doclayout_yolo_available, DOCLAYOUT_YOLO_IMPORT_ERROR)),
         ("layoutlmv3", (is_layoutlmv3_available, LAYOUTLMV3_IMPORT_ERROR)),
+        ("dit", (is_dit_available, DIT_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),

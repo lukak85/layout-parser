@@ -21,6 +21,7 @@ from .file_utils import (
     is_detectron2_available,
     is_doclayout_yolo_available,
     is_layoutlmv3_available,
+    is_dit_available,
     is_paddle_available,
     is_effdet_available,
     is_vgt_available,
@@ -38,6 +39,7 @@ _import_structure = {
         "is_detectron2_available",
         "is_doclayout_yolo_available",
         "is_layoutlmv3_available",
+        "is_dit_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -60,6 +62,9 @@ if is_doclayout_yolo_available():
 
 if is_layoutlmv3_available():
     _import_structure["models.layoutlmv3"] = ["LayoutLMv3LayoutModel"]
+
+if is_dit_available():
+    _import_structure["models.dit"] = ["DiTLayoutModel"]
 
 if is_paddle_available():
     _import_structure["models.paddledetection"] = ["PaddleDetectionLayoutModel"]

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import cv2
+import torch
 
 from .catalog import MODEL_CATALOG
 from .ditod.config import add_vit_config
@@ -25,71 +26,39 @@ if is_detectron2_available():
     from detectron2.engine import DefaultPredictor
     from detectron2.engine import default_setup
 
-__all__ = ["LayoutLMv3LayoutModel"]
+
+__all__ = ["DiTLayoutModel"]
 
 
-class LayoutLMv3LayoutModel(BaseLayoutModel):
-    """Create a Detectron2-based Layout Detection Model
-
-    Args:
-        config_path (:obj:`str`):
-            The path to the configuration file.
-        model_path (:obj:`str`, None):
-            The path to the saved weights of the model.
-            If set, overwrite the weights in the configuration file.
-            Defaults to `None`.
-        label_map (:obj:`dict`, optional):
-            The map from the model prediction (ids) to real
-            word labels (strings). If the config is from one of the supported
-            datasets, Layout Parser will automatically initialize the label_map.
-            Defaults to `None`.
-        device(:obj:`str`, optional):
-            Whether to use cuda or cpu devices. If not set, LayoutParser will
-            automatically determine the device to initialize the models on.
-        extra_config (:obj:`list`, optional):
-            Extra configuration passed to the Detectron2 model
-            configuration. The argument will be used in the `merge_from_list
-            <https://detectron2.readthedocs.io/modules/config.html
-            #detectron2.config.CfgNode.merge_from_list>`_ function.
-            Defaults to `[]`.
-
-    Examples::
-        >>> import layoutparser as lp
-        >>> model = lp.LayoutLMv3LayoutModel('lp://HJDataset/faster_rcnn_R_50_FPN_3x/config')
-        >>> model.detect(image)
-
-    """
-
+class DiTLayoutModel(BaseLayoutModel):
     DEPENDENCIES = ["detectron2"]
-    DETECTOR_NAME = "layoutlmv3"
+    DETECTOR_NAME = "dit"
+    MODEL_CATALOG = MODEL_CATALOG
+
     def __init__(
         self,
         model_path,
         args=None,
         label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"},
-        extra_config=None,
-        enforce_cpu=None,
-        device=None,
     ):
-        # TODO: currently works with only one GPU, expand to more
+        # Step 1: instantiate config
         self.cfg = get_cfg()
-        # add_coat_config(cfg)
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file("cascade_layoutlmv3.yaml") # TODO: fix this so that it reads from correct directory
-        # self.cfg.merge_from_list(None)
-        self.cfg.MODEL.WEIGHTS = model_path
-        self.cfg.freeze()
-        default_setup(self.cfg, args)
+        self.cfg.merge_from_file("cascade_dit_base.yaml")
 
-        self.args = args
+        # Step 2: add model weights URL to config
+        self.cfg.MODEL.WEIGHTS = model_path
 
         self.label_map = label_map
 
-        #self.model = MyTrainer.build_model(self.cfg)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.cfg.MODEL.DEVICE = device
+
+        self.cfg.freeze()
+
+        default_setup(self.cfg, args)
+
         self._create_model()
-
-    MODEL_CATALOG = MODEL_CATALOG
-
 
     def _create_model(self):
         self.model = DefaultPredictor(self.cfg)
@@ -120,15 +89,6 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
         return layout
 
     def detect(self, path):
-        """Detect the layout of a given image.
-
-        Args:
-            image (:obj:`np.ndarray` or `PIL.Image`): The input image to detect.
-
-        Returns:
-            :obj:`~layoutparser.Layout`: The detected layout of the input image
-        """
-
         image = self.image_loader(path)
         outputs = self.model(image)
         layout = self.gather_output(outputs)
@@ -139,4 +99,3 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
         if to_rgb:
             img = img[..., ::-1]
         return img
-
