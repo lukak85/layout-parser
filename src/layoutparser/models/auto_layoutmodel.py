@@ -22,6 +22,7 @@ from ..file_utils import (
     is_effdet_available,
     is_detectron2_available,
     is_doclayout_yolo_available,
+    is_layoutlmv3_available,
     is_paddle_available,
 )
 
@@ -56,6 +57,16 @@ if is_doclayout_yolo_available():
     ALL_AVAILABLE_BACKENDS[DocLayoutYOLOLayoutModel.DETECTOR_NAME] = DocLayoutYOLOLayoutModel
     for dataset_name in _doclayout_yolo_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(DocLayoutYOLOLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_layoutlmv3_available():
+    from .layoutlmv3.layoutmodel import LayoutLMv3LayoutModel
+    from .layoutlmv3.catalog import MODEL_CATALOG as _layoutlmv3_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[LayoutLMv3LayoutModel.DETECTOR_NAME] = LayoutLMv3LayoutModel
+    for dataset_name in _layoutlmv3_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(LayoutLMv3LayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_paddle_available():

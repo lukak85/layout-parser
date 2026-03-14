@@ -20,8 +20,10 @@ from .file_utils import (
     _LazyModule,
     is_detectron2_available,
     is_doclayout_yolo_available,
+    is_layoutlmv3_available,
     is_paddle_available,
     is_effdet_available,
+    is_vgt_available,
     is_pytesseract_available,
     is_gcv_available,
 )
@@ -35,6 +37,7 @@ _import_structure = {
         "is_torch_cuda_available",
         "is_detectron2_available",
         "is_doclayout_yolo_available",
+        "is_layoutlmv3_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -55,11 +58,17 @@ if is_detectron2_available():
 if is_doclayout_yolo_available():
     _import_structure["models.doclayout_yolo"] = ["DocLayoutYOLOLayoutModel"]
 
+if is_layoutlmv3_available():
+    _import_structure["models.layoutlmv3"] = ["LayoutLMv3LayoutModel"]
+
 if is_paddle_available():
     _import_structure["models.paddledetection"] = ["PaddleDetectionLayoutModel"]
 
 if is_effdet_available():
     _import_structure["models.effdet"] = ["EfficientDetLayoutModel"]
+
+if is_vgt_available():
+    _import_structure["models.vgt"] = ["VGTLayoutModel"]
 
 if is_pytesseract_available():
     _import_structure["ocr.tesseract_agent"] = [

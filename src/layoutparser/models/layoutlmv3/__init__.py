@@ -12,12 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .. import is_layoutlmv3_available
-
-from .detectron2.layoutmodel import Detectron2LayoutModel
-from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
-from .effdet.layoutmodel import EfficientDetLayoutModel
-from .auto_layoutmodel import AutoLayoutModel
-
-if is_layoutlmv3_available():
-    from .layoutlmv3.layoutmodel import LayoutLMv3LayoutModel
+from . import catalog as _UNUSED
+from .layoutmodel import LayoutLMv3LayoutModel

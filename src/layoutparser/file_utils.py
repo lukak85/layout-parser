@@ -55,6 +55,13 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _doclayout_yolo_available = False
 
+_layoutlmv3_available = importlib.util.find_spec("detectron2") is not None
+try:
+    _layoutlmv3_version = importlib_metadata.version("detectron2")
+    logger.debug(f"LayoutLMv3 version {_layoutlmv3_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _layoutlmv3_available = False
+
 _paddle_available = importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -71,6 +78,15 @@ try:
     logger.debug(f"Effdet version {_effdet_version} available.")
 except importlib_metadata.PackageNotFoundError:
     _effdet_version = False
+
+
+# TODO: this was added to work with layout-parser, check if more stuff needs to be added (probably)
+_vgt_available = importlib.util.find_spec("effdet") is not None
+try:
+    _vgt_version = importlib_metadata.version("effdet")
+    logger.debug(f"VGT version {_effdet_version} available.")
+except importlib_metadata.PackageNotFoundError:
+    _vgt_version = False
 
 ###########################################
 ############## OCR Tool Deps ##############
@@ -117,12 +133,20 @@ def is_doclayout_yolo_available():
     return _doclayout_yolo_available
 
 
+def is_layoutlmv3_available():
+    return _layoutlmv3_available
+
+
 def is_paddle_available():
     return _paddle_available
 
 
 def is_effdet_available():
     return _effdet_available
+
+
+def is_vgt_available():
+    return _vgt_available
 
 
 def is_pytesseract_available():
@@ -147,6 +171,11 @@ that match your environment. Typically the following would work for MacOS or Lin
 
 DOCLAYOUT_YOLO_IMPORT_ERROR = """
 {0} requires the doclayout-yolo library but it was not found in your environment. TOOD - add installation instructions
+here.
+"""
+
+LAYOUTLMV3_IMPORT_ERROR = """
+{0} requires the layoutlmft library but it was not found in your environment. TOOD - add installation instructions
 here.
 """
 
@@ -175,6 +204,7 @@ BACKENDS_MAPPING = dict(
         ("torch", (is_torch_available, PYTORCH_IMPORT_ERROR)),
         ("detectron2", (is_detectron2_available, DETECTRON2_IMPORT_ERROR)),
         ("doclayout_yolo", (is_doclayout_yolo_available, DOCLAYOUT_YOLO_IMPORT_ERROR)),
+        ("layoutlmv3", (is_layoutlmv3_available, LAYOUTLMV3_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
