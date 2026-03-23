@@ -24,6 +24,8 @@ from ..file_utils import (
     is_doclayout_yolo_available,
     is_layoutlmv3_available,
     is_dit_available,
+    is_nemotron_available,
+    is_vgt_available,
     is_paddle_available,
 )
 
@@ -78,6 +80,26 @@ if is_dit_available():
     ALL_AVAILABLE_BACKENDS[DiTLayoutModel.DETECTOR_NAME] = DiTLayoutModel
     for dataset_name in _dit_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(DiTLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_nemotron_available():
+    from .nemotron.layoutmodel import NemotronLayoutModel
+    from .nemotron.catalog import MODEL_CATALOG as _nemotron_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[NemotronLayoutModel.DETECTOR_NAME] = NemotronLayoutModel
+    for dataset_name in _nemotron_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(NemotronLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_vgt_available():
+    from .vgt.layoutmodel import VGTLayoutModel
+    from .vgt.catalog import MODEL_CATALOG as _vgt_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[VGTLayoutModel.DETECTOR_NAME] = VGTLayoutModel
+    for dataset_name in _vgt_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(VGTLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_paddle_available():

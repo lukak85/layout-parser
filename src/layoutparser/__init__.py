@@ -22,9 +22,10 @@ from .file_utils import (
     is_doclayout_yolo_available,
     is_layoutlmv3_available,
     is_dit_available,
+    is_nemotron_available,
+    is_vgt_available,
     is_paddle_available,
     is_effdet_available,
-    is_vgt_available,
     is_pytesseract_available,
     is_gcv_available,
 )
@@ -40,6 +41,8 @@ _import_structure = {
         "is_doclayout_yolo_available",
         "is_layoutlmv3_available",
         "is_dit_available",
+        "is_nemotron_available",
+        "is_vgt_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -66,14 +69,17 @@ if is_layoutlmv3_available():
 if is_dit_available():
     _import_structure["models.dit"] = ["DiTLayoutModel"]
 
+if is_nemotron_available():
+    _import_structure["models.nemotron"] = ["NemotronLayoutModel"]
+
+if is_vgt_available():
+    _import_structure["models.vgt"] = ["VGTLayoutModel"]
+
 if is_paddle_available():
     _import_structure["models.paddledetection"] = ["PaddleDetectionLayoutModel"]
 
 if is_effdet_available():
     _import_structure["models.effdet"] = ["EfficientDetLayoutModel"]
-
-if is_vgt_available():
-    _import_structure["models.vgt"] = ["VGTLayoutModel"]
 
 if is_pytesseract_available():
     _import_structure["ocr.tesseract_agent"] = [

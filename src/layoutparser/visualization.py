@@ -389,7 +389,13 @@ def draw_box(
                 text = str(ele.type) if not text else text + ": " + str(ele.type)
 
             start_x, start_y = ele.coordinates[:2]
-            text_w, text_h = font_obj.getsize(text)
+
+            from packaging.version import Version
+            import PIL
+            if Version(PIL.__version__) < Version("10.0.0"):
+                text_w, text_h = font_obj.getsize(text)
+            else:
+                text_w, text_h = font_obj.getlength(text), font_obj.size
 
             text_box_object = Rectangle(
                 start_x, start_y, start_x + text_w, start_y + text_h

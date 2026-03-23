@@ -69,6 +69,27 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _dit_available = False
 
+""" TODO: temp fix
+_nemotron_available = importlib.util.find_spec("nemotron-page-elements-v3") is not None
+try:
+    _nemotron_version = importlib_metadata.version("nemotron-page-elements-v3")
+    logger.debug(f"Nemotron version {_nemotron_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _nemotron_available = False
+"""
+
+# TODO: temp fix
+_nemotron_available = True
+_nemotron_version = "3.0.0"
+logger.debug(f"VGT version {_nemotron_version} available")
+
+_vgt_available = importlib.util.find_spec("detectron2") is not None
+try:
+    _vgt_version = importlib_metadata.version("detectron2")
+    logger.debug(f"VGT version {_vgt_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _vgt_available = False
+
 _paddle_available = importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -85,15 +106,6 @@ try:
     logger.debug(f"Effdet version {_effdet_version} available.")
 except importlib_metadata.PackageNotFoundError:
     _effdet_version = False
-
-
-# TODO: this was added to work with layout-parser, check if more stuff needs to be added (probably)
-_vgt_available = importlib.util.find_spec("effdet") is not None
-try:
-    _vgt_version = importlib_metadata.version("effdet")
-    logger.debug(f"VGT version {_effdet_version} available.")
-except importlib_metadata.PackageNotFoundError:
-    _vgt_version = False
 
 ###########################################
 ############## OCR Tool Deps ##############
@@ -148,16 +160,20 @@ def is_dit_available():
     return _dit_available
 
 
+def is_nemotron_available():
+    return _nemotron_available
+
+
+def is_vgt_available():
+    return _vgt_available
+
+
 def is_paddle_available():
     return _paddle_available
 
 
 def is_effdet_available():
     return _effdet_available
-
-
-def is_vgt_available():
-    return _vgt_available
 
 
 def is_pytesseract_available():
@@ -195,6 +211,16 @@ DIT_IMPORT_ERROR = """
 here.
 """
 
+NEMOTRON_IMPORT_ERROR = """
+{0} requires the nemotron-page-layout3 library but it was not found in your environment. TOOD - add installation instructions
+here.
+"""
+
+VGT_IMPORT_ERROR = """
+{0} requires the detectron2 library but it was not found in your environment. TOOD - add installation instructions
+here.
+"""
+
 PADDLE_IMPORT_ERROR = """
 {0} requires the PaddlePaddle library but it was not found in your environment. Checkout the instructions on the
 installation page: https://github.com/PaddlePaddle/Paddle and follow the ones that match your environment.
@@ -222,6 +248,8 @@ BACKENDS_MAPPING = dict(
         ("doclayout_yolo", (is_doclayout_yolo_available, DOCLAYOUT_YOLO_IMPORT_ERROR)),
         ("layoutlmv3", (is_layoutlmv3_available, LAYOUTLMV3_IMPORT_ERROR)),
         ("dit", (is_dit_available, DIT_IMPORT_ERROR)),
+        ("nemotron", (is_nemotron_available, NEMOTRON_IMPORT_ERROR)),
+        ("vgt", (is_vgt_available, VGT_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
