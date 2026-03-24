@@ -26,6 +26,7 @@ from ..file_utils import (
     is_dit_available,
     is_nemotron_available,
     is_vgt_available,
+    is_dotsocr_available,
     is_paddle_available,
 )
 
@@ -100,6 +101,16 @@ if is_vgt_available():
     ALL_AVAILABLE_BACKENDS[VGTLayoutModel.DETECTOR_NAME] = VGTLayoutModel
     for dataset_name in _vgt_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(VGTLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_dotsocr_available():
+    from .dotsocr.layoutmodel import DotsOCRLayoutModel
+    from .dotsocr.catalog import MODEL_CATALOG as _dotsocr_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[DotsOCRLayoutModel.DETECTOR_NAME] = DotsOCRLayoutModel
+    for dataset_name in _dotsocr_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(DotsOCRLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_paddle_available():

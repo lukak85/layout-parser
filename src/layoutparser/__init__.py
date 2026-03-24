@@ -24,6 +24,7 @@ from .file_utils import (
     is_dit_available,
     is_nemotron_available,
     is_vgt_available,
+    is_dotsocr_available,
     is_paddle_available,
     is_effdet_available,
     is_pytesseract_available,
@@ -43,6 +44,7 @@ _import_structure = {
         "is_dit_available",
         "is_nemotron_available",
         "is_vgt_available",
+        "is_dotsocr_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -74,6 +76,9 @@ if is_nemotron_available():
 
 if is_vgt_available():
     _import_structure["models.vgt"] = ["VGTLayoutModel"]
+
+if is_dotsocr_available():
+    _import_structure["models.dotsocr"] = ["DotsOCRLayoutModel"]
 
 if is_paddle_available():
     _import_structure["models.paddledetection"] = ["PaddleDetectionLayoutModel"]

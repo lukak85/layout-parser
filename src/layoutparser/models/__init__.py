@@ -17,6 +17,7 @@ from .. import is_layoutlmv3_available
 from .. import is_dit_available
 from .. import is_nemotron_available
 from .. import is_vgt_available
+from .. import is_dotsocr_available
 
 from .detectron2.layoutmodel import Detectron2LayoutModel
 from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
@@ -33,3 +34,5 @@ if is_nemotron_available():
     from .nemotron.layoutmodel import NemotronLayoutModel
 if is_vgt_available():
     from .vgt.layoutmodel import VGTLayoutModel
+if is_dotsocr_available():
+    from .dotsocr.layoutmodel import DotsOCRLayoutModel

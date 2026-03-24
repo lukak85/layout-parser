@@ -79,7 +79,7 @@ except importlib_metadata.PackageNotFoundError:
 """
 
 # TODO: temp fix
-_nemotron_available = True
+_nemotron_available = False
 _nemotron_version = "3.0.0"
 logger.debug(f"VGT version {_nemotron_version} available")
 
@@ -89,6 +89,14 @@ try:
     logger.debug(f"VGT version {_vgt_version} available")
 except importlib_metadata.PackageNotFoundError:
     _vgt_available = False
+
+
+_dotsocr_available = importlib.util.find_spec("dots_ocr") is not None
+try:
+    _dotsocr_version = importlib_metadata.version("dots_ocr")
+    logger.debug(f"dots.ocr version {_dotsocr_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _dotsocr_available = False
 
 _paddle_available = importlib.util.find_spec("paddle") is not None
 try:
@@ -167,6 +175,9 @@ def is_nemotron_available():
 def is_vgt_available():
     return _vgt_available
 
+def is_dotsocr_available():
+    return _dotsocr_available
+
 
 def is_paddle_available():
     return _paddle_available
@@ -221,6 +232,11 @@ VGT_IMPORT_ERROR = """
 here.
 """
 
+DOTSOCR_IMPORT_ERROR = """
+{0} requires the dots-ocr library but it was not found in your environment. TOOD - add installation instructions
+here.
+"""
+
 PADDLE_IMPORT_ERROR = """
 {0} requires the PaddlePaddle library but it was not found in your environment. Checkout the instructions on the
 installation page: https://github.com/PaddlePaddle/Paddle and follow the ones that match your environment.
@@ -250,6 +266,7 @@ BACKENDS_MAPPING = dict(
         ("dit", (is_dit_available, DIT_IMPORT_ERROR)),
         ("nemotron", (is_nemotron_available, NEMOTRON_IMPORT_ERROR)),
         ("vgt", (is_vgt_available, VGT_IMPORT_ERROR)),
+        ("dotsocr", (is_dotsocr_available, DOTSOCR_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
