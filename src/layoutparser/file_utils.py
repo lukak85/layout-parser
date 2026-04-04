@@ -30,6 +30,22 @@ if sys.version_info < (3, 8):
 else:
     import importlib.metadata as importlib_metadata
 
+# If LAYOUTPARSER_BACKEND is set, only the specified backend(s) will report as
+# available. Comma-separated list, e.g. "layoutlmv3" or "doclayout_yolo,vgt".
+# This prevents backends that share a dependency (e.g. detectron2) from all
+# appearing available when only one is properly configured.
+_allowed_backends = os.environ.get("LAYOUTPARSER_BACKEND", None)
+if _allowed_backends is not None:
+    _allowed_backends = {b.strip().lower() for b in _allowed_backends.split(",")}
+    logger.debug(f"LAYOUTPARSER_BACKEND restricts available backends to: {_allowed_backends}")
+
+
+def _is_backend_allowed(name: str) -> bool:
+    """Return True if this backend is allowed by LAYOUTPARSER_BACKEND (or if the env var is unset)."""
+    if _allowed_backends is None:
+        return True
+    return name.lower() in _allowed_backends
+
 ###########################################
 ############ Layout Model Deps ############
 ###########################################
@@ -48,42 +64,35 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _detectron2_available = False
 
-_doclayout_yolo_available = importlib.util.find_spec("doclayout_yolo") is not None
+_doclayout_yolo_available = _is_backend_allowed("doclayout_yolo") and importlib.util.find_spec("doclayout_yolo") is not None
 try:
     _doclayout_yolo_version = importlib_metadata.version("doclayout_yolo")
     logger.debug(f"DocLayout-YOLO version {_doclayout_yolo_version} available")
 except importlib_metadata.PackageNotFoundError:
     _doclayout_yolo_available = False
 
-_layoutlmv3_available = importlib.util.find_spec("detectron2") is not None
+_layoutlmv3_available = _is_backend_allowed("layoutlmv3") and importlib.util.find_spec("detectron2") is not None
 try:
     _layoutlmv3_version = importlib_metadata.version("detectron2")
     logger.debug(f"LayoutLMv3 version {_layoutlmv3_version} available")
 except importlib_metadata.PackageNotFoundError:
     _layoutlmv3_available = False
 
-_dit_available = importlib.util.find_spec("detectron2") is not None
+_dit_available = _is_backend_allowed("dit") and importlib.util.find_spec("detectron2") is not None
 try:
     _dit_version = importlib_metadata.version("detectron2")
     logger.debug(f"DiT version {_dit_version} available")
 except importlib_metadata.PackageNotFoundError:
     _dit_available = False
 
-""" TODO: temp fix
-_nemotron_available = importlib.util.find_spec("nemotron-page-elements-v3") is not None
+_nemotron_available = _is_backend_allowed("nemotron") and importlib.util.find_spec("nemotron_page_elements_v3") is not None
 try:
     _nemotron_version = importlib_metadata.version("nemotron-page-elements-v3")
     logger.debug(f"Nemotron version {_nemotron_version} available")
 except importlib_metadata.PackageNotFoundError:
     _nemotron_available = False
-"""
 
-# TODO: temp fix
-_nemotron_available = False
-_nemotron_version = "3.0.0"
-logger.debug(f"VGT version {_nemotron_version} available")
-
-_vgt_available = importlib.util.find_spec("detectron2") is not None
+_vgt_available = _is_backend_allowed("vgt") and importlib.util.find_spec("detectron2") is not None
 try:
     _vgt_version = importlib_metadata.version("detectron2")
     logger.debug(f"VGT version {_vgt_version} available")
@@ -91,14 +100,14 @@ except importlib_metadata.PackageNotFoundError:
     _vgt_available = False
 
 
-_dotsocr_available = importlib.util.find_spec("dots_ocr") is not None
+_dotsocr_available = _is_backend_allowed("dotsocr") and importlib.util.find_spec("dots_ocr") is not None
 try:
     _dotsocr_version = importlib_metadata.version("dots_ocr")
     logger.debug(f"dots.ocr version {_dotsocr_version} available")
 except importlib_metadata.PackageNotFoundError:
     _dotsocr_available = False
 
-_paddle_available = importlib.util.find_spec("paddle") is not None
+_paddle_available = _is_backend_allowed("paddle") and importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
     # Install name: pip install paddlepaddle
@@ -108,7 +117,7 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _paddle_available = False
 
-_effdet_available = importlib.util.find_spec("effdet") is not None
+_effdet_available = _is_backend_allowed("effdet") and importlib.util.find_spec("effdet") is not None
 try:
     _effdet_version = importlib_metadata.version("effdet")
     logger.debug(f"Effdet version {_effdet_version} available.")
