@@ -144,7 +144,11 @@ class DotsOCRLayoutModel(BaseLayoutModel):
     def detect(self, path):
         results = self.parse_image(path, "prompt_layout_all_en", fitz_preprocess=self.fitz_preprocess)
 
-        return self.gather_output(json.loads(results))
+        # Due to presence of double quotes
+        from json_repair import repair_json
+        results = repair_json(results, return_objects=True)
+
+        return self.gather_output(results)
 
     def image_loader(self, image):
         return Image.open(image)
