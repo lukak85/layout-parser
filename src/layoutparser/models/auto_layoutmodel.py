@@ -27,6 +27,7 @@ from ..file_utils import (
     is_nemotron_available,
     is_vgt_available,
     is_dotsocr_available,
+    is_docstrum_available,
     is_paddle_available,
 )
 
@@ -111,6 +112,16 @@ if is_dotsocr_available():
     ALL_AVAILABLE_BACKENDS[DotsOCRLayoutModel.DETECTOR_NAME] = DotsOCRLayoutModel
     for dataset_name in _dotsocr_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(DotsOCRLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_docstrum_available():
+    from .docstrum.layoutmodel import DocstrumLayoutModel
+    from .docstrum.catalog import MODEL_CATALOG as _docstrum_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[DocstrumLayoutModel.DETECTOR_NAME] = DocstrumLayoutModel
+    for dataset_name in _docstrum_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(DocstrumLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_paddle_available():

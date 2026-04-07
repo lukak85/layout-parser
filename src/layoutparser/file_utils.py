@@ -107,6 +107,27 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _dotsocr_available = False
 
+_docstrum_available = _is_backend_allowed("docstrum") and importlib.util.find_spec("shapely") is not None
+try:
+    _docstrum_version = importlib_metadata.version("shapely")
+    logger.debug(f"Docstrum (shapely) version {_docstrum_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _docstrum_available = False
+
+_recursive_xycut_available = _is_backend_allowed("recursive_xycut") and importlib.util.find_spec("numpy") is not None
+try:
+    _recursive_xycut_version = importlib_metadata.version("numpy")
+    logger.debug(f"RecursiveXYCut (numpy) version {_recursive_xycut_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _recursive_xycut_available = False
+
+_rlsa_available = _is_backend_allowed("rlsa") and importlib.util.find_spec("numpy") is not None
+try:
+    _rlsa_version = importlib_metadata.version("numpy")
+    logger.debug(f"RLSA (numpy) version {_rlsa_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _rlsa_available = False
+
 _paddle_available = _is_backend_allowed("paddle") and importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -188,6 +209,18 @@ def is_dotsocr_available():
     return _dotsocr_available
 
 
+def is_docstrum_available():
+    return _docstrum_available
+
+
+def is_recursive_xycut_available():
+    return _recursive_xycut_available
+
+
+def is_rlsa_available():
+    return _rlsa_available
+
+
 def is_paddle_available():
     return _paddle_available
 
@@ -246,6 +279,11 @@ DOTSOCR_IMPORT_ERROR = """
 here.
 """
 
+DOCSTRUM_IMPORT_ERROR = """
+{0} requires the shapely library but it was not found in your environment. You can install it with pip:
+`pip install shapely`
+"""
+
 PADDLE_IMPORT_ERROR = """
 {0} requires the PaddlePaddle library but it was not found in your environment. Checkout the instructions on the
 installation page: https://github.com/PaddlePaddle/Paddle and follow the ones that match your environment.
@@ -276,6 +314,9 @@ BACKENDS_MAPPING = dict(
         ("nemotron", (is_nemotron_available, NEMOTRON_IMPORT_ERROR)),
         ("vgt", (is_vgt_available, VGT_IMPORT_ERROR)),
         ("dotsocr", (is_dotsocr_available, DOTSOCR_IMPORT_ERROR)),
+        ("docstrum", (is_docstrum_available, DOCSTRUM_IMPORT_ERROR)),
+        ("recursive_xycut", (is_recursive_xycut_available, "")),
+        ("rlsa", (is_rlsa_available, "")),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),

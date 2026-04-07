@@ -18,6 +18,9 @@ from .. import is_dit_available
 from .. import is_nemotron_available
 from .. import is_vgt_available
 from .. import is_dotsocr_available
+from .. import is_docstrum_available
+from .. import is_recursive_xycut_available
+from .. import is_rlsa_available
 
 from .detectron2.layoutmodel import Detectron2LayoutModel
 from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
@@ -36,3 +39,9 @@ if is_vgt_available():
     from .vgt.layoutmodel import VGTLayoutModel
 if is_dotsocr_available():
     from .dotsocr.layoutmodel import DotsOCRLayoutModel
+if is_docstrum_available():
+    from .docstrum.layoutmodel import DocstrumLayoutModel
+if is_recursive_xycut_available():
+    from .recursive_xycut.layoutmodel import RecursiveXYCutLayoutModel
+if is_rlsa_available():
+    from .rlsa.layoutmodel import RLSALayoutModel

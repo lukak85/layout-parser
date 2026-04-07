@@ -12,12 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-MODEL_CATALOG = {}
-
-# fmt: off
-LABEL_MAP_CATALOG = {
-    "default": {
-        0: "Paragraph",
-    },
-}
-# fmt: on
+from . import catalog as _UNUSED
+from .layoutmodel import RecursiveXYCutLayoutModel

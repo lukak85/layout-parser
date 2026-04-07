@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import cv2
 import torch
 
@@ -44,7 +45,7 @@ class DiTLayoutModel(BaseLayoutModel):
         # Step 1: instantiate config
         self.cfg = get_cfg()
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file("cascade_dit_base.yaml")
+        self.cfg.merge_from_file(os.path.abspath("cascade_dit_base.yaml"))
 
         # Step 2: add model weights URL to config
         self.cfg.MODEL.WEIGHTS = model_path

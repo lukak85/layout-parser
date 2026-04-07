@@ -313,6 +313,7 @@ def bbox_to_coco(bboxes):
             "bbox": [x, y, w, h],
             "area": w * h,
             "iscrowd": 0,
+            "score": 1,
             # polygon segmentation is optional; empty list allowed
             "segmentation": [],
         }
@@ -334,12 +335,14 @@ def coco_to_layout(coco_json):
     for ele in coco_json["annotations"]:
 
         x, y, w, h = ele['bbox']
+        score = ele["score"]
 
         layout.append(
             TextBlock(
                 block=Rectangle(x, y, w + x, h + y),
                 type="Paragraph",
-                id=ele['id']
+                id=ele['id'],
+                score=score,
             )
         )
 

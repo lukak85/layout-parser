@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import cv2
 
 from .catalog import MODEL_CATALOG
@@ -65,6 +66,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
     def __init__(
         self,
         model_path,
+        yaml_path="cascade_layoutlmv3.yaml",
         args=None,
         label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"},
         extra_config=None,
@@ -75,7 +77,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
         self.cfg = get_cfg()
         # add_coat_config(cfg)
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file("cascade_layoutlmv3.yaml") # TODO: fix this so that it reads from correct directory
+        self.cfg.merge_from_file(os.path.abspath(yaml_path))
         # self.cfg.merge_from_list(None)
         self.cfg.MODEL.WEIGHTS = model_path
         self.cfg.freeze()

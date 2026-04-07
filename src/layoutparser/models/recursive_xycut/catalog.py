@@ -17,7 +17,7 @@ MODEL_CATALOG = {}
 # fmt: off
 LABEL_MAP_CATALOG = {
     "default": {
-        0: "Paragraph",
+        0: "Block",
     },
 }
 # fmt: on

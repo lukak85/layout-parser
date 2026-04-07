@@ -25,6 +25,9 @@ from .file_utils import (
     is_nemotron_available,
     is_vgt_available,
     is_dotsocr_available,
+    is_docstrum_available,
+    is_recursive_xycut_available,
+    is_rlsa_available,
     is_paddle_available,
     is_effdet_available,
     is_pytesseract_available,
@@ -45,6 +48,9 @@ _import_structure = {
         "is_nemotron_available",
         "is_vgt_available",
         "is_dotsocr_available",
+        "is_docstrum_available",
+        "is_recursive_xycut_available",
+        "is_rlsa_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -79,6 +85,15 @@ if is_vgt_available():
 
 if is_dotsocr_available():
     _import_structure["models.dotsocr"] = ["DotsOCRLayoutModel"]
+
+if is_docstrum_available():
+    _import_structure["models.docstrum"] = ["DocstrumLayoutModel"]
+
+if is_recursive_xycut_available():
+    _import_structure["models.recursive_xycut"] = ["RecursiveXYCutLayoutModel"]
+
+if is_rlsa_available():
+    _import_structure["models.rlsa"] = ["RLSALayoutModel"]
 
 if is_paddle_available():
     _import_structure["models.paddledetection"] = ["PaddleDetectionLayoutModel"]

@@ -78,7 +78,7 @@ class VGTLayoutModel(BaseLayoutModel):
 
         self.cfg = get_cfg()
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file("D4LA_VGT_cascade_PTM.yaml")
+        self.cfg.merge_from_file(os.path.abspath("D4LA_VGT_cascade_PTM.yaml"))
         # self.cfg.merge_from_list(None)
         self.cfg.MODEL.WEIGHTS = model_path
         self.cfg.freeze()
