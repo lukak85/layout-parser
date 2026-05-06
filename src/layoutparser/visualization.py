@@ -236,6 +236,9 @@ def draw_box(
     id_text_color: Optional[str] = None,
     id_text_background_color: Optional[str] = None,
     id_text_background_alpha: Optional[float] = 1,
+    order: Optional[List[int]] = None,
+    order_color: Optional[str] = "blue",
+    order_line_width: Optional[int] = 2,
 ):
     """Draw the layout region on the input canvas(image).
 
@@ -300,6 +303,20 @@ def draw_box(
             A float range from 0 to 1. Set to change the alpha of the
             drawn text.
             Defaults to 1 - the text box will be solid.
+        order (:obj:`List[int]`, optional):
+            A list of integers defining the reading order of layout elements.
+            Each integer is an index into the layout list. For example,
+            ``[2, 0, 1]`` means layout element 2 is first in order,
+            element 0 is second, and element 1 is third. When provided,
+            order numbers are drawn on each element and lines connect
+            consecutive elements in order.
+            Defaults to None.
+        order_color (:obj:`str`, optional):
+            The color used for drawing order numbers and connecting lines.
+            Defaults to "blue".
+        order_line_width (:obj:`int`, optional):
+            The width of the lines connecting ordered elements.
+            Defaults to 2.
     Returns:
         :obj:`PIL.Image.Image`:
             A Image object containing the `layout` draw upon the input `canvas`.
@@ -309,12 +326,22 @@ def draw_box(
         f"The id_text_background_alpha value {id_text_background_alpha} is not within range [0,1]."
     )
 
+    if order is not None:
+        if len(order) != len(layout):
+            raise ValueError(
+                f"The length of order ({len(order)}) must equal the number of layout blocks ({len(layout)})"
+            )
+        if sorted(order) != list(range(len(layout))):
+            raise ValueError(
+                "order must be a permutation of indices [0, len(layout))"
+            )
+
     draw = ImageDraw.Draw(canvas, mode="RGBA")
 
     id_text_background_color = id_text_background_color or DEFAULT_TEXT_BACKGROUND
     id_text_color = id_text_color or DEFAULT_TEXT_COLOR
 
-    if show_element_id or show_element_type:
+    if show_element_id or show_element_type or order is not None:
         font_obj = _create_font_object(id_font_size, id_font_path)
 
     if box_alpha is None:
@@ -364,7 +391,7 @@ def draw_box(
             )
 
     # A post check of the lengths of the input lists
-    # To support more versions of python, we do not use 
+    # To support more versions of python, we do not use
     # zip(*, strict=True)
     assert len(layout) == len(box_color) == len(box_alpha) == len(box_width)
 
@@ -400,7 +427,6 @@ def draw_box(
             text_box_object = Rectangle(
                 start_x, start_y, start_x + text_w, start_y + text_h
             )
-            # Add a small background for the text
 
             _draw_transparent_box_on_handler(
                 draw,
@@ -409,11 +435,68 @@ def draw_box(
                 id_text_background_alpha,
             )
 
-            # Draw the ids
             draw.text(
                 (start_x, start_y),
                 text,
                 fill=id_text_color,
+                font=font_obj,
+            )
+
+    # Draw order numbers and connecting lines
+    if order is not None:
+        # Build a map: layout index -> position in reading order (1-based)
+        index_to_rank = {layout_idx: rank for rank, layout_idx in enumerate(order)}
+
+        # Compute centers for all layout elements
+        centers = []
+        for ele in layout:
+            if isinstance(ele, Interval):
+                ele = ele.put_on_canvas(canvas)
+            x1, y1, x2, y2 = ele.coordinates
+            centers.append(((x1 + x2) / 2, (y1 + y2) / 2))
+
+        # Draw connecting lines between consecutive elements in order
+        for i in range(len(order) - 1):
+            curr_idx = order[i]
+            next_idx = order[i + 1]
+            draw.line(
+                [centers[curr_idx], centers[next_idx]],
+                fill=order_color,
+                width=order_line_width,
+            )
+
+        # Draw order numbers on each element
+        for layout_idx, rank in index_to_rank.items():
+            ele = layout[layout_idx]
+            if isinstance(ele, Interval):
+                ele = ele.put_on_canvas(canvas)
+            x1, y1, x2, y2 = ele.coordinates
+            center_x, center_y = (x1 + x2) / 2, (y1 + y2) / 2
+
+            order_text = str(rank + 1)
+
+            from packaging.version import Version
+            import PIL
+            if Version(PIL.__version__) < Version("10.0.0"):
+                text_w, text_h = font_obj.getsize(order_text)
+            else:
+                text_w, text_h = font_obj.getlength(order_text), font_obj.size
+
+            # Center the order label on the element
+            text_x = center_x - text_w / 2
+            text_y = center_y - text_h / 2
+
+            text_box_object = Rectangle(
+                text_x - 2, text_y - 2, text_x + text_w + 2, text_y + text_h + 2
+            )
+            _draw_transparent_box_on_handler(
+                draw, text_box_object, "white", 0.7
+            )
+
+            draw.text(
+                (text_x, text_y),
+                order_text,
+                fill=order_color,
                 font=font_obj,
             )
 
