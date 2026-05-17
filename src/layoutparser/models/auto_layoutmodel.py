@@ -27,6 +27,7 @@ from ..file_utils import (
     is_nemotron_available,
     is_vgt_available,
     is_ppdoclayoutv3_available,
+    is_rfdetr_available,
     is_dotsocr_available,
     is_docstrum_available,
     is_paddle_available,
@@ -113,6 +114,16 @@ if is_ppdoclayoutv3_available():
     ALL_AVAILABLE_BACKENDS[PPDocLayoutV3LayoutModel.DETECTOR_NAME] = PPDocLayoutV3LayoutModel
     for dataset_name in _ppdoclayoutv3_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(PPDocLayoutV3LayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_rfdetr_available():
+    from .rfdetr.layoutmodel import RFDETRLayoutModel
+    from .rfdetr.catalog import MODEL_CATALOG as _rfdetr_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[RFDETRLayoutModel.DETECTOR_NAME] = RFDETRLayoutModel
+    for dataset_name in _rfdetr_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(RFDETRLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_dotsocr_available():

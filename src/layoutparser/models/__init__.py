@@ -22,6 +22,7 @@ from .. import is_docstrum_available
 from .. import is_recursive_xycut_available
 from .. import is_rlsa_available
 from .. import is_ppdoclayoutv3_available
+from .. import is_rfdetr_available
 
 from .detectron2.layoutmodel import Detectron2LayoutModel
 from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
@@ -48,3 +49,5 @@ if is_rlsa_available():
     from .rlsa.layoutmodel import RLSALayoutModel
 if is_ppdoclayoutv3_available():
     from .ppdoclayoutv3.layoutmodel import PPDocLayoutV3LayoutModel
+if is_rfdetr_available():
+    from .rfdetr.layoutmodel import RFDETRLayoutModel

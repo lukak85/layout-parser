@@ -25,6 +25,7 @@ from .file_utils import (
     is_nemotron_available,
     is_vgt_available,
     is_ppdoclayoutv3_available,
+    is_rfdetr_available,
     is_dotsocr_available,
     is_docstrum_available,
     is_recursive_xycut_available,
@@ -32,7 +33,7 @@ from .file_utils import (
     is_paddle_available,
     is_effdet_available,
     is_pytesseract_available,
-    is_gcv_available,
+    is_gcv_available, is_rfdetr_available,
 )
 
 _import_structure = {
@@ -53,6 +54,7 @@ _import_structure = {
         "is_recursive_xycut_available",
         "is_rlsa_available",
         "is_ppdoclayoutv3_available",
+        "is_rfdetr_available",
         "is_paddle_available",
         "is_pytesseract_available",
         "is_gcv_available",
@@ -87,6 +89,10 @@ if is_vgt_available():
 
 if is_ppdoclayoutv3_available():
     _import_structure["models.ppdoclayoutv3"] = ["PPDocLayoutV3LayoutModel"]
+
+if is_rfdetr_available():
+    _import_structure["models.rfdetr"] = ["RFDETRLayoutModel"]
+
 
 if is_dotsocr_available():
     _import_structure["models.dotsocr"] = ["DotsOCRLayoutModel"]

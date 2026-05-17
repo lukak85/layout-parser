@@ -136,6 +136,13 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _ppdoclayoutv3_available = False
 
+_rfdetr_available = _is_backend_allowed("rfdetr") and importlib.util.find_spec("rfdetr_doclayout") is not None
+try:
+    _rfdetr_version = importlib_metadata.version("rfdetr_doclayout")
+    logger.debug(f"RF-DETR version {_rfdetr_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _rfdetr_available = False
+
 _paddle_available = _is_backend_allowed("paddle") and importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -233,6 +240,10 @@ def is_ppdoclayoutv3_available():
     return _ppdoclayoutv3_available
 
 
+def is_rfdetr_available():
+    return _rfdetr_available
+
+
 def is_paddle_available():
     return _paddle_available
 
@@ -290,6 +301,10 @@ PPDOCLAYOUTV3_IMPORT_ERROR = """
 {0} requires the paddleocr library but it was not found in your environment. Install using: 'pip install paddleocr'
 """
 
+RFDETR_IMPORT_ERROR = """
+{0} requires the rfdetr_doclayout library but it was not found in your environment. Install using: 'pip install rfdetr-doclayout'
+"""
+
 DOTSOCR_IMPORT_ERROR = """
 {0} requires the dots-ocr library but it was not found in your environment. TOOD - add installation instructions
 here.
@@ -334,6 +349,7 @@ BACKENDS_MAPPING = dict(
         ("recursive_xycut", (is_recursive_xycut_available, "")),
         ("rlsa", (is_rlsa_available, "")),
         ("ppdoclayoutv3", (is_ppdoclayoutv3_available, PPDOCLAYOUTV3_IMPORT_ERROR)),
+        ("rfdetr", (is_rfdetr_available, RFDETR_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
