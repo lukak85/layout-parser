@@ -26,6 +26,7 @@ from ..file_utils import (
     is_dit_available,
     is_nemotron_available,
     is_vgt_available,
+    is_ppdoclayoutv3_available,
     is_dotsocr_available,
     is_docstrum_available,
     is_paddle_available,
@@ -102,6 +103,16 @@ if is_vgt_available():
     ALL_AVAILABLE_BACKENDS[VGTLayoutModel.DETECTOR_NAME] = VGTLayoutModel
     for dataset_name in _vgt_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(VGTLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_ppdoclayoutv3_available():
+    from .ppdoclayoutv3.layoutmodel import PPDocLayoutV3LayoutModel
+    from .ppdoclayoutv3.catalog import MODEL_CATALOG as _ppdoclayoutv3_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[PPDocLayoutV3LayoutModel.DETECTOR_NAME] = PPDocLayoutV3LayoutModel
+    for dataset_name in _ppdoclayoutv3_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(PPDocLayoutV3LayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_dotsocr_available():

@@ -21,6 +21,7 @@ from .. import is_dotsocr_available
 from .. import is_docstrum_available
 from .. import is_recursive_xycut_available
 from .. import is_rlsa_available
+from .. import is_ppdoclayoutv3_available
 
 from .detectron2.layoutmodel import Detectron2LayoutModel
 from .paddledetection.layoutmodel import PaddleDetectionLayoutModel
@@ -45,3 +46,5 @@ if is_recursive_xycut_available():
     from .recursive_xycut.layoutmodel import RecursiveXYCutLayoutModel
 if is_rlsa_available():
     from .rlsa.layoutmodel import RLSALayoutModel
+if is_ppdoclayoutv3_available():
+    from .ppdoclayoutv3.layoutmodel import PPDocLayoutV3LayoutModel

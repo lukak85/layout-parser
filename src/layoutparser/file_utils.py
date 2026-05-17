@@ -85,9 +85,10 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _dit_available = False
 
-_nemotron_available = _is_backend_allowed("nemotron") and importlib.util.find_spec("nemotron_page_elements_v3") is not None
+_nemotron_available = _is_backend_allowed("nemotron") #and importlib.util.find_spec("nemotron_page_elements_v3") is not None
 try:
-    _nemotron_version = importlib_metadata.version("nemotron-page-elements-v3")
+    #_nemotron_version = importlib_metadata.version("nemotron-page-elements-v3") # TODO: figure this out
+    _nemotron_version = "1.0.0"
     logger.debug(f"Nemotron version {_nemotron_version} available")
 except importlib_metadata.PackageNotFoundError:
     _nemotron_available = False
@@ -127,6 +128,13 @@ try:
     logger.debug(f"RLSA (numpy) version {_rlsa_version} available")
 except importlib_metadata.PackageNotFoundError:
     _rlsa_available = False
+
+_ppdoclayoutv3_available = _is_backend_allowed("ppdoclayoutv3") and importlib.util.find_spec("paddleocr") is not None
+try:
+    _ppdoclayoutv3_version = importlib_metadata.version("paddleocr")
+    logger.debug(f"PP-DocLayoutV3 version {_ppdoclayoutv3_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _ppdoclayoutv3_available = False
 
 _paddle_available = _is_backend_allowed("paddle") and importlib.util.find_spec("paddle") is not None
 try:
@@ -221,6 +229,10 @@ def is_rlsa_available():
     return _rlsa_available
 
 
+def is_ppdoclayoutv3_available():
+    return _ppdoclayoutv3_available
+
+
 def is_paddle_available():
     return _paddle_available
 
@@ -274,6 +286,10 @@ VGT_IMPORT_ERROR = """
 here.
 """
 
+PPDOCLAYOUTV3_IMPORT_ERROR = """
+{0} requires the paddleocr library but it was not found in your environment. Install using: 'pip install paddleocr'
+"""
+
 DOTSOCR_IMPORT_ERROR = """
 {0} requires the dots-ocr library but it was not found in your environment. TOOD - add installation instructions
 here.
@@ -317,6 +333,7 @@ BACKENDS_MAPPING = dict(
         ("docstrum", (is_docstrum_available, DOCSTRUM_IMPORT_ERROR)),
         ("recursive_xycut", (is_recursive_xycut_available, "")),
         ("rlsa", (is_rlsa_available, "")),
+        ("ppdoclayoutv3", (is_ppdoclayoutv3_available, PPDOCLAYOUTV3_IMPORT_ERROR)),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
