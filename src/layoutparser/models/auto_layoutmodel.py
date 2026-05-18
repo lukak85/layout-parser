@@ -28,6 +28,7 @@ from ..file_utils import (
     is_vgt_available,
     is_ppdoclayoutv3_available,
     is_rfdetr_available,
+    is_swindocseg_available,
     is_dotsocr_available,
     is_docstrum_available,
     is_paddle_available,
@@ -124,6 +125,17 @@ if is_rfdetr_available():
     ALL_AVAILABLE_BACKENDS[RFDETRLayoutModel.DETECTOR_NAME] = RFDETRLayoutModel
     for dataset_name in _rfdetr_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(RFDETRLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+
+if is_swindocseg_available():
+    from .swindocseg.layoutmodel import SwinDocSegLayoutModel
+    from .swindocseg.catalog import MODEL_CATALOG as _swindocseg_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[SwinDocSegLayoutModel.DETECTOR_NAME] = SwinDocSegLayoutModel
+    for dataset_name in _swindocseg_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(SwinDocSegLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 if is_dotsocr_available():

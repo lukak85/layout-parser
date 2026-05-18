@@ -143,6 +143,14 @@ try:
 except importlib_metadata.PackageNotFoundError:
     _rfdetr_available = False
 
+
+_swindocseg_available = _is_backend_allowed("swindocseg") and importlib.util.find_spec("detectron2") is not None
+try:
+    _swindocseg_version = importlib_metadata.version("detectron2")
+    logger.debug(f"SwinDocSegmenter version {_swindocseg_version} available")
+except importlib_metadata.PackageNotFoundError:
+    _swindocseg_available = False
+
 _paddle_available = _is_backend_allowed("paddle") and importlib.util.find_spec("paddle") is not None
 try:
     # The name of the paddlepaddle library:
@@ -242,6 +250,9 @@ def is_ppdoclayoutv3_available():
 
 def is_rfdetr_available():
     return _rfdetr_available
+
+def is_swindocseg_available():
+    return _swindocseg_available
 
 
 def is_paddle_available():
@@ -350,6 +361,7 @@ BACKENDS_MAPPING = dict(
         ("rlsa", (is_rlsa_available, "")),
         ("ppdoclayoutv3", (is_ppdoclayoutv3_available, PPDOCLAYOUTV3_IMPORT_ERROR)),
         ("rfdetr", (is_rfdetr_available, RFDETR_IMPORT_ERROR)),
+        ("swindocseg", (is_swindocseg_available, "")),
         ("paddle", (is_paddle_available, PADDLE_IMPORT_ERROR)),
         ("effdet", (is_effdet_available, EFFDET_IMPORT_ERROR)),
         ("pytesseract", (is_pytesseract_available, PYTESSERACT_IMPORT_ERROR)),
