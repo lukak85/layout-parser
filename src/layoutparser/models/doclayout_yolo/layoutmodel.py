@@ -127,10 +127,11 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
             device=self.device,
         )
         # Read image dimensions from file
-        from PIL import Image
-
-        img = Image.open(image)
-        width, height = img.size
+        if hasattr(image, "size"):
+            width, height = image.size
+        else:
+            import numpy as np
+            height, width = np.asarray(image).shape[:2]
 
         # Debugging code, visualize the detection results using YOLOv10's built-in plotting function.
         if self.debug:
