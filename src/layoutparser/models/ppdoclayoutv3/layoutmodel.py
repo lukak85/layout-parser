@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import numpy as np
 from paddleocr import LayoutDetection
 
 from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
@@ -79,7 +80,7 @@ class PPDocLayoutV3LayoutModel(BaseLayoutModel):
             :obj:`~layoutparser.Layout`: The detected layout of the input image
         """
 
-        output = self.model.predict(input=image, batch_size=1)
+        output = self.model.predict(input=np.array(image), batch_size=1)
         layout = self.gather_output(output[0])
 
         return layout
