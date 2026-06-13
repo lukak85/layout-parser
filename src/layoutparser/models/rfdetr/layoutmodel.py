@@ -78,7 +78,7 @@ class RFDETRLayoutModel(BaseLayoutModel):
             :obj:`~layoutparser.Layout`: The detected layout of the input image
         """
 
-        _, labels, boxes, _ = self.model.predict(image)
+        _, labels, boxes, _ = self.model.predict(image.as_posix())
         layout = self.gather_output(labels, boxes)
 
         return layout
