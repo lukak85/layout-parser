@@ -39,13 +39,14 @@ class DiTLayoutModel(BaseLayoutModel):
     def __init__(
         self,
         model_path,
+        yaml_path="cascade_dit_base.yaml",
         args=None,
         label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"},
     ):
         # Step 1: instantiate config
         self.cfg = get_cfg()
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file(os.path.abspath("cascade_dit_base.yaml"))
+        self.cfg.merge_from_file(os.path.abspath(yaml_path))
 
         # Step 2: add model weights URL to config
         self.cfg.MODEL.WEIGHTS = model_path
