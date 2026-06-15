@@ -57,7 +57,7 @@ class VGTLayoutModel(BaseLayoutModel):
 
     Examples::
         >>> import layoutparser as lp
-        >>> model = lp.VGTLayoutModel('lp://HJDataset/faster_rcnn_R_50_FPN_3x/config')
+        >>> model = lp.VGTLayoutModel()
         >>> model.detect(image)
 
     """
@@ -69,16 +69,17 @@ class VGTLayoutModel(BaseLayoutModel):
     def __init__(
         self,
         model_path=None,
+        yaml_path="D4LA_VGT_cascade_PTM.yaml",
         grid_root=None,
         args=None,
-            label_map=None,
+        label_map=None,
     ):
         if label_map is None:
             label_map = {0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"}
 
         self.cfg = get_cfg()
         add_vit_config(self.cfg)
-        self.cfg.merge_from_file(os.path.abspath("D4LA_VGT_cascade_PTM.yaml"))
+        self.cfg.merge_from_file(os.path.abspath(yaml_path))
         # self.cfg.merge_from_list(None)
         self.cfg.MODEL.WEIGHTS = model_path
         self.cfg.freeze()
@@ -135,11 +136,12 @@ class VGTLayoutModel(BaseLayoutModel):
             :obj:`~layoutparser.Layout`: The detected layout of the input image
         """
 
-        document_name = path.split("/")[-1].split("_")[0]
-        image_number = path.split("/")[-1].split("_")[1].split(".")[0]
+        path_str = path.as_posix()
+        document_name = path_str.split("/")[-1].split("_")[0]
+        image_number = path_str.split("/")[-1].split("_")[1].split(".")[0]
         image_grid_path = os.path.join(self.grid_root, document_name,f"page_{image_number}.pdf.pkl")
 
-        image = self.image_loader(path)
+        image = self.image_loader(path_str)
         outputs = self.model(image, grid_path=image_grid_path)
         layout = self.gather_output(outputs)
         return layout
