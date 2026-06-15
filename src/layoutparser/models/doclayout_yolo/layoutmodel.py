@@ -131,7 +131,9 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
             width, height = image.size
         else:
             import numpy as np
-            height, width = np.asarray(image).shape[:2]
+            from PIL import Image
+            image_pil = Image.open(image)
+            height, width = np.asarray(image_pil).shape[:2]
 
         # Debugging code, visualize the detection results using YOLOv10's built-in plotting function.
         if self.debug:
