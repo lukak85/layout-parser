@@ -17,41 +17,170 @@ from iopath.common.file_io import PathHandler
 from ..base_catalog import PathManager
 
 MODEL_CATALOG = {
-    "DocStructBench": {
-        "doclayout_yolo_docstructbench_imgsz1024": "https://huggingface.co/juliozhao/DocLayout-YOLO-DocStructBench/resolve/main/doclayout_yolo_docstructbench_imgsz1024.pt",
+    "DocLayNet": {
+        "doclayout_yolo_docstructbench_imgsz1024": "https://huggingface.co/juliozhao/DocLayout-YOLO-DocLayNet-from_scratch",
+        "doclayout_yolo_docstructbench_imgsz10242": "https://huggingface.co/juliozhao/DocLayout-YOLO-DocLayNet-Docsynth300K_pretrained",
     },
-}
-
-CONFIG_CATALOG = {
-    "DocStructBench": {
-        "faster_rcnn_R_50_FPN_3x": "https://www.dropbox.com/s/f3b12qc4hc0yh4m/config.yml?dl=1",
+    "D4LA": {
+        "doclayout_yolo_docstructbench_imgsz1024": "https://huggingface.co/juliozhao/DocLayout-YOLO-D4LA-from_scratch",
+        "doclayout_yolo_docstructbench_imgsz10242": "https://huggingface.co/juliozhao/DocLayout-YOLO-D4LA-Docsynth300K_pretrained",
+    },
+    "DocSynth300K": {
+        "doclayout_yolo_docsynth300k_imgsz1600": "https://huggingface.co/juliozhao/DocLayout-YOLO-DocSynth300K-pretrain",
     },
 }
 
 # fmt: off
 LABEL_MAP_CATALOG = {
-    "PubLayNet": {
-        0: 'title',
-        1: 'plain text',
-        2: 'abandon',
-        3: 'figure',
-        4: 'figure_caption',
-        5: 'table',
-        6: 'table_caption',
-        7: 'table_footnote',
-        8: 'isolate_formula',
-        9: 'formula_caption'},
+    "DocLayNet": {
+        0: "Caption",
+        1: "Footnote",
+        2: "Formula",
+        3: "List-item",
+        4: "Page-footer",
+        5: "Page-header",
+        6: "Picture",
+        7: "Section-header",
+        8: "Table",
+        9: "Text",
+        10: "Title"
+    },
+    "D4LA": {
+        0: "DocTitle",
+        1: "ParaTitle",
+        2: "ParaText",
+        3: "ListText",
+        4: "RegionTitle",
+        5: "Date",
+        6: "LetterHead",
+        7: "LetterDear",
+        8: "LetterSign",
+        9: "Question",
+        10: "OtherText",
+        11: "RegionKV",
+        12: "RegionList",
+        13: "Abstract",
+        14: "Author",
+        15: "TableName",
+        16: "Table",
+        17: "Figure",
+        18: "FigureName",
+        19: "Equation",
+        20: "Reference",
+        21: "Footer",
+        22: "PageHeader",
+        23: "PageFooter",
+        24: "Number",
+        25: "Catalog",
+        26: "PageNumber"
+    },
+    "DocSynth300K": {
+        0: "QR code",
+        1: "advertisement",
+        2: "algorithm",
+        3: "answer",
+        4: "author",
+        5: "barcode",
+        6: "bill",
+        7: "blank",
+        8: "bracket",
+        9: "breakout",
+        10: "byline",
+        11: "caption",
+        12: "catalogue",
+        13: "chapter title",
+        14: "code",
+        15: "correction",
+        16: "credit",
+        17: "dateline",
+        18: "drop cap",
+        19: "editor's note",
+        20: "endnote",
+        21: "examinee information",
+        22: "fifth-level title",
+        23: "figure",
+        24: "first-level question number",
+        25: "first-level title",
+        26: "flag",
+        27: "folio",
+        28: "footer",
+        29: "footnote",
+        30: "formula",
+        31: "fourth-level section title",
+        32: "fourth-level title",
+        33: "header",
+        34: "headline",
+        35: "index",
+        36: "inside",
+        37: "institute",
+        38: "jump line",
+        39: "kicker",
+        40: "lead",
+        41: "marginal note",
+        42: "matching",
+        43: "mugshot",
+        44: "option",
+        45: "ordered list",
+        46: "other question number",
+        47: "page number",
+        48: "paragraph",
+        49: "part",
+        50: "play",
+        51: "poem",
+        52: "reference",
+        53: "sealing line",
+        54: "second-level question number",
+        55: "second-level title",
+        56: "section",
+        57: "section title",
+        58: "sidebar",
+        59: "sub section title",
+        60: "subhead",
+        61: "subsub section title",
+        62: "supplementary note",
+        63: "table",
+        64: "table caption",
+        65: "table note",
+        66: "teasers",
+        67: "third-level question number",
+        68: "third-level title",
+        69: "title",
+        70: "translator",
+        71: "underscore",
+        72: "unordered list",
+        73: "weather forecast",
+    },
     "Glasana": {
-        0: 'headline',
-        1: 'paragraph',
-        2: 'admonition',
-        3: 'figure',
-        4: 'caption',
-        5: 'figure',
-        6: 'caption',
-        7: 'caption',
-        8: 'figure',
-        9: 'caption',
+        0: "Abandon",
+        1: "Advertisement",
+        2: "Author",
+        3: "Byline",
+        4: "Caption",
+        5: "Dateline",
+        6: "Deck",
+        7: "Dropcap",
+        8: "EditNote",
+        9: "FigByline",
+        10: "Figure",
+        11: "Footer",
+        12: "Footnote",
+        13: "Header",
+        14: "Headline",
+        15: "Kicker",
+        16: "Literary",
+        17: "Literature",
+        18: "MarginNote",
+        19: "OrderedList",
+        20: "PageNum",
+        21: "Paragraph",
+        22: "Question",
+        23: "Quote",
+        24: "Section",
+        25: "Subhead",
+        26: "Subsubhead",
+        27: "TOC",
+        28: "Translator",
+        29: "UnorderedList"
     }
 }
 # fmt: on
@@ -62,7 +191,7 @@ class LayoutParserDocLayoutYOLOModelHandler(PathHandler):
     Resolve anything that's in LayoutParser model zoo.
     """
 
-    PREFIX = "lp://detectron2/"
+    PREFIX = "lp://doclayout-yolo/"
 
     def _get_supported_prefixes(self):
         return [self.PREFIX]
@@ -74,8 +203,6 @@ class LayoutParserDocLayoutYOLOModelHandler(PathHandler):
 
         if data_type == "weight":
             model_url = MODEL_CATALOG[dataset_name]["/".join(model_name)]
-        elif data_type == "config":
-            model_url = CONFIG_CATALOG[dataset_name]["/".join(model_name)]
         else:
             raise ValueError(f"Unknown data_type {data_type}")
         return PathManager.get_local_path(model_url, **kwargs)
