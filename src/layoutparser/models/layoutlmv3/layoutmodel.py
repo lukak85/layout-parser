@@ -69,9 +69,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
         yaml_path="cascade_layoutlmv3.yaml",
         args=None,
         label_map=None,
-        extra_config=None,
-        enforce_cpu=None,
-        device=None,
+        score_threshold=0.1,
     ):
         # TODO: currently works with only one GPU, expand to more
         self.cfg = get_cfg()
@@ -85,12 +83,15 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
 
         self.args = args
 
+        # TODO: figure out if pass by name or value
         if label_map is None:
             label_map = LABEL_MAP_CATALOG["PubLayNet"]
         else:
             label_map = LABEL_MAP_CATALOG[label_map]
 
         self.label_map = label_map
+
+        self.score_threshold = score_threshold
 
         #self.model = MyTrainer.build_model(self.cfg)
         self._create_model()
@@ -101,7 +102,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
     def _create_model(self):
         self.model = DefaultPredictor(self.cfg)
 
-    def gather_output(self, outputs):
+    def gather_output(self, outputs, score_threshold=0.1):
 
         instance_pred = outputs["instances"].to("cpu")
 
@@ -111,7 +112,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
         labels = instance_pred.pred_classes.tolist()
 
         for score, box, label in zip(scores, boxes, labels):
-            if score < 0.1:
+            if score < score_threshold:
                 continue
 
             x_1, y_1, x_2, y_2 = box
@@ -138,7 +139,7 @@ class LayoutLMv3LayoutModel(BaseLayoutModel):
 
         image = self.image_loader(path)
         outputs = self.model(image)
-        layout = self.gather_output(outputs)
+        layout = self.gather_output(outputs, score_threshold=self.score_threshold)
         return layout
 
     def image_loader(self, path, to_rgb=True):

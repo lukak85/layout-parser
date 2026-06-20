@@ -16,7 +16,7 @@ import os
 import cv2
 import torch
 
-from .catalog import MODEL_CATALOG
+from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
 from .ditod.config import add_vit_config
 from ..base_layoutmodel import BaseLayoutModel
 from ...elements import Rectangle, TextBlock, Layout
@@ -41,7 +41,8 @@ class DiTLayoutModel(BaseLayoutModel):
         model_path,
         yaml_path="cascade_dit_base.yaml",
         args=None,
-        label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"},
+        label_map=None,
+        score_threshold=0.1
     ):
         # Step 1: instantiate config
         self.cfg = get_cfg()
@@ -51,7 +52,15 @@ class DiTLayoutModel(BaseLayoutModel):
         # Step 2: add model weights URL to config
         self.cfg.MODEL.WEIGHTS = model_path
 
+        # TODO: figure out if pass by name or value
+        if label_map is None:
+            label_map = LABEL_MAP_CATALOG["PubLayNet"]
+        else:
+            label_map = LABEL_MAP_CATALOG[label_map]
+
         self.label_map = label_map
+
+        self.score_threshold = score_threshold
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         self.cfg.MODEL.DEVICE = device
@@ -65,7 +74,7 @@ class DiTLayoutModel(BaseLayoutModel):
     def _create_model(self):
         self.model = DefaultPredictor(self.cfg)
 
-    def gather_output(self, outputs):
+    def gather_output(self, outputs, score_threshold=0.1):
 
         instance_pred = outputs["instances"].to("cpu")
 
@@ -75,7 +84,7 @@ class DiTLayoutModel(BaseLayoutModel):
         labels = instance_pred.pred_classes.tolist()
 
         for score, box, label in zip(scores, boxes, labels):
-            if score < 0.1:
+            if score < score_threshold:
                 continue
 
             x_1, y_1, x_2, y_2 = box
@@ -93,7 +102,7 @@ class DiTLayoutModel(BaseLayoutModel):
     def detect(self, path):
         image = self.image_loader(path)
         outputs = self.model(image)
-        layout = self.gather_output(outputs)
+        layout = self.gather_output(outputs, score_threshold=self.score_threshold)
         return layout
 
     def image_loader(self, path, to_rgb=True):
