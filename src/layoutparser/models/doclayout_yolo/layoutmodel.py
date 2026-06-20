@@ -53,7 +53,7 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
         self.debug = debug
 
         if label_map is None:
-            label_map = LABEL_MAP_CATALOG["PubLayNet"]
+            label_map = LABEL_MAP_CATALOG["DocLayNet"]
         else:
             label_map = LABEL_MAP_CATALOG[label_map]
 
