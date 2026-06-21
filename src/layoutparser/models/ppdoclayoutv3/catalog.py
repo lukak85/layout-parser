@@ -25,29 +25,6 @@ CONFIG_CATALOG = {
 
 # fmt: off
 LABEL_MAP_CATALOG = {
-    "PubLayNet": {
-        0: 'title',
-        1: 'plain text',
-        2: 'abandon',
-        3: 'figure',
-        4: 'figure_caption',
-        5: 'table',
-        6: 'table_caption',
-        7: 'table_footnote',
-        8: 'isolate_formula',
-        9: 'formula_caption'},
-    "Glasana": {
-        0: 'headline',
-        1: 'paragraph',
-        2: 'admonition',
-        3: 'figure',
-        4: 'caption',
-        5: 'figure',
-        6: 'caption',
-        7: 'caption',
-        8: 'figure',
-        9: 'caption',
-    }
 }
 # fmt: on
 

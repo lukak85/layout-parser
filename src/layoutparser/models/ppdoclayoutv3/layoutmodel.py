@@ -74,13 +74,14 @@ class PPDocLayoutV3LayoutModel(BaseLayoutModel):
         """Detect the layout of a given image.
 
         Args:
-            image (:obj:`np.ndarray` or `PIL.Image`): The input image to detect.
+            image path (:str): The input image path to detect.
 
         Returns:
             :obj:`~layoutparser.Layout`: The detected layout of the input image
         """
 
-        output = self.model.predict(input=np.array(image), batch_size=1)
+        image_path_str = image.as_posix()
+        output = self.model.predict(input=image_path_str, batch_size=1)
         layout = self.gather_output(output[0])
 
         return layout
