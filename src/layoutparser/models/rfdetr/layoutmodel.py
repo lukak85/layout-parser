@@ -28,8 +28,16 @@ class RFDETRLayoutModel(BaseLayoutModel):
 
     def __init__(
         self,
+        label_map=None
     ):
         self.model = RfDetrDoclayout()
+
+        if label_map is None:
+            label_map = LABEL_MAP_CATALOG["DocLayNet"]
+        else:
+            label_map = LABEL_MAP_CATALOG[label_map]
+
+        self.label_map = label_map
 
     def gather_output(self, labels, boxes, image_id=1):
         json_results = []
@@ -54,7 +62,7 @@ class RFDETRLayoutModel(BaseLayoutModel):
         # for score, box, label in zip(scores, boxes, labels):
         for res in json_results:
             score = res["score"]
-            label = res["label"]
+            label = self.label_map.get(res["label"], res["label"])
             box = res["bbox"]
 
             x_1, y_1, w, h = box
