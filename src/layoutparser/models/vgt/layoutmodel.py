@@ -15,7 +15,7 @@ import os
 
 import cv2
 
-from .catalog import MODEL_CATALOG
+from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
 from .ditod.config import add_vit_config
 from ..base_layoutmodel import BaseLayoutModel
 from ...elements import Rectangle, TextBlock, Layout
@@ -73,9 +73,17 @@ class VGTLayoutModel(BaseLayoutModel):
         grid_root=None,
         args=None,
         label_map=None,
+        score_threshold=0.1
     ):
+        # TODO: figure out if pass by name or value
         if label_map is None:
-            label_map = {0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"}
+            label_map = LABEL_MAP_CATALOG["PubLayNet"]
+        else:
+            label_map = LABEL_MAP_CATALOG[label_map]
+
+        self.label_map = label_map
+
+        self.score_threshold = score_threshold
 
         self.cfg = get_cfg()
         add_vit_config(self.cfg)

@@ -70,44 +70,55 @@ CONFIG_CATALOG = {
 
 # fmt: off
 LABEL_MAP_CATALOG = {
-    "HJDataset": {
-        1: "Page Frame",
-        2: "Row",
-        3: "Title Region",
-        4: "Text Region",
-        5: "Title",
-        6: "Subtitle",
-        7: "Other",
-    },
     "PubLayNet": {
         0: "Text", 
         1: "Title", 
         2: "List", 
         3: "Table", 
-        4: "Figure"},
-    "PrimaLayout": {
-        1: "TextRegion",
-        2: "ImageRegion",
-        3: "TableRegion",
-        4: "MathsRegion",
-        5: "SeparatorRegion",
-        6: "OtherRegion",
+        4: "Figure"
     },
-    "NewspaperNavigator": {
-        0: "Photograph",
-        1: "Illustration",
-        2: "Map",
-        3: "Comics/Cartoon",
-        4: "Editorial Cartoon",
-        5: "Headline",
-        6: "Advertisement",
+    "DocLayNet": {
+        0: "Caption",
+        1: "Footnote",
+        2: "Formula",
+        3: "List-item",
+        4: "Page-footer",
+        5: "Page-header",
+        6: "Picture",
+        7: "Section-header",
+        8: "Table",
+        9: "Text",
+        10: "Title"
     },
-    "TableBank": {
-        0: "Table"
-    },
-    "MFD": {
-        1: "Equation"
-    },
+    "D4LA": {
+        0: "DocTitle",
+        1: "ParaTitle",
+        2: "ParaText",
+        3: "ListText",
+        4: "RegionTitle",
+        5: "Date",
+        6: "LetterHead",
+        7: "LetterDear",
+        8: "LetterSign",
+        9: "Question",
+        10: "OtherText",
+        11: "RegionKV",
+        12: "RegionList",
+        13: "Abstract",
+        14: "Author",
+        15: "TableName",
+        16: "Table",
+        17: "Figure",
+        18: "FigureName",
+        19: "Equation",
+        20: "Reference",
+        21: "Footer",
+        22: "PageHeader",
+        23: "PageFooter",
+        24: "Number",
+        25: "Catalog",
+        26: "PageNumber"
+    }
 }
 # fmt: on
 
