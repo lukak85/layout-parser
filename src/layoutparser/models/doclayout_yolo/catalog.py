@@ -71,6 +71,18 @@ LABEL_MAP_CATALOG = {
         25: "Catalog",
         26: "PageNumber"
     },
+    "DocStructBench": {
+        0: "title",
+        1: "plain text",
+        2: "abandon",
+        3: "figure",
+        4: "figure_caption",
+        5: "table",
+        6: "table_caption",
+        7: "table_footnote",
+        8: "isolate_formula",
+        9: "formula_caption"
+    },
     "Glasana": {
         0: "Abandon",
         1: "Advertisement",

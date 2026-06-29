@@ -125,6 +125,7 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
             imgsz=self.imgsz,
             conf=self.conf,
             device=self.device,
+            verbose=self.verbose,  # suppresses detection logs
         )
         # Read image dimensions from file
         if hasattr(image, "size"):
