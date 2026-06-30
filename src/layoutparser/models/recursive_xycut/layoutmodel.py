@@ -14,8 +14,11 @@
 
 from typing import Union
 
+import PIL
 import numpy as np
 from PIL import Image
+from scipy.signal import find_peaks
+from matplotlib import pyplot as plt
 
 from .catalog import MODEL_CATALOG
 from ..base_layoutmodel import BaseLayoutModel
@@ -31,16 +34,39 @@ class RecursiveXYCutLayoutModel(BaseLayoutModel):
     MODEL_CATALOG = MODEL_CATALOG
 
     def __init__(
-        self,
+            self,
+            n=10,
+            ignoreBottomTop=True,
+            axis=0
     ):
-        pass
+        self.n = n
+        self.ignoreBottomTop = ignoreBottomTop
+        self.axis = axis
 
-    def detect(self, image: Union["np.ndarray", "Image.Image"]) -> Layout:
-        return image
+    def detect(self, image: str) -> Layout:
+        image = self.image_loader(image).convert('L')
+        image_arr = np.asarray(image)
+        # distance for peaks
+        distance = image_arr.shape[0 if self.axis == 1 else 1] / self.n
+        # Sum the pixels along given axis
+        sum_vals = image_arr.sum(axis=self.axis)
+        # Get the indices of the peaks
+        peaks, _ = find_peaks(sum_vals, distance=distance)
+        # Temp variable to create segment lines i.e. 0 out the required values.
+        temp = np.ones(image_arr.shape)
+        # Skip top and bottom segmentation or not (depends on the param)
+        # for peak in peaks[1:-1 if ignoreBottomTop else ]:
+        for peak in peaks[1:-1] if self.ignoreBottomTop else peaks:
+            if self.axis == 1:
+                temp[range(peak - 2, peak + 2)] = 0
+            else:
+                temp[:, range(peak - 2, peak + 2)] = 0
+        si = Image.fromarray(np.uint8(image_arr * temp))
+        plt.imshow(si)
+        plt.axis("off")
+        plt.show()
+        quit()
 
-    def image_loader(self, image: Union["np.ndarray", "Image.Image"]) -> "np.ndarray":
-        if isinstance(image, Image.Image):
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            image = np.array(image)
-        return image
+    def image_loader(self, image: str) -> "PIL.Image.Image":
+        img = Image.open(image)
+        return img

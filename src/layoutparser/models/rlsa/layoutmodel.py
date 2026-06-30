@@ -31,7 +31,7 @@ class RLSALayoutModel(BaseLayoutModel):
     MODEL_CATALOG = MODEL_CATALOG
 
     def __init__(
-        self
+            self,
     ):
         pass
 
