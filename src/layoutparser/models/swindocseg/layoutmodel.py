@@ -16,7 +16,7 @@ import os
 import cv2
 import torch
 
-from .catalog import MODEL_CATALOG
+from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
 from ..base_layoutmodel import BaseLayoutModel
 from ...elements import Rectangle, TextBlock, Layout
 from ...file_utils import is_detectron2_available
@@ -48,6 +48,7 @@ class SwinDocSegLayoutModel(BaseLayoutModel):
         yaml_path="cascade_dit_base.yaml",
         args=None,
         label_map={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"},
+        score_threshold=0.1,
     ):
         # Step 1: instantiate config
         self.cfg = get_cfg()
@@ -58,7 +59,15 @@ class SwinDocSegLayoutModel(BaseLayoutModel):
         # Step 2: add model weights URL to config
         self.cfg.MODEL.WEIGHTS = model_path
 
+
+        if label_map is None:
+            label_map = LABEL_MAP_CATALOG["PubLayNet"]
+        else:
+            label_map = LABEL_MAP_CATALOG[label_map]
+
         self.label_map = label_map
+
+        self.score_threshold = score_threshold
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
         self.cfg.MODEL.DEVICE = device
@@ -82,7 +91,7 @@ class SwinDocSegLayoutModel(BaseLayoutModel):
         labels = instance_pred.pred_classes.tolist()
 
         for score, box, label in zip(scores, boxes, labels):
-            if score < 0.1:
+            if score < self.score_threshold:
                 continue
 
             x_1, y_1, x_2, y_2 = box

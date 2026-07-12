@@ -17,30 +17,13 @@ from iopath.common.file_io import PathHandler
 from ..base_catalog import PathManager
 
 MODEL_CATALOG = {
-    "DocStructBench": {
-        "doclayout_yolo_docstructbench_imgsz1024": "https://huggingface.co/juliozhao/DocLayout-YOLO-DocStructBench/resolve/main/doclayout_yolo_docstructbench_imgsz1024.pt",
-    },
 }
 
 CONFIG_CATALOG = {
-    "DocStructBench": {
-        "faster_rcnn_R_50_FPN_3x": "https://www.dropbox.com/s/f3b12qc4hc0yh4m/config.yml?dl=1",
-    },
 }
 
 # fmt: off
 LABEL_MAP_CATALOG = {
-    "PubLayNet": {
-        0: 'title',
-        1: 'plain text',
-        2: 'abandon',
-        3: 'figure',
-        4: 'figure_caption',
-        5: 'table',
-        6: 'table_caption',
-        7: 'table_footnote',
-        8: 'isolate_formula',
-        9: 'formula_caption'}
 }
 # fmt: on
 

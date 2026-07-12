@@ -41,6 +41,27 @@ LABEL_MAP_CATALOG = {
         3: "Table",
         4: "Figure"
     },
+    "DocLayNet": {
+        0: "Caption",
+        1: "Footnote",
+        2: "Formula",
+        3: "List-item",
+        4: "Page-footer",
+        5: "Page-header",
+        6: "Picture",
+        7: "Section-header",
+        8: "Table",
+        9: "Text",
+        10: "Title"
+    },
+    "PrimaLayout": {
+        1: "TextRegion",
+        2: "ImageRegion",
+        3: "TableRegion",
+        4: "MathsRegion",
+        5: "SeparatorRegion",
+        6: "OtherRegion",
+    }
 }
 # fmt: on
 

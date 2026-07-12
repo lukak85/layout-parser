@@ -11,14 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import numpy as np
 import torch
 from PIL import Image
-import numpy as np
 
+from .catalog import MODEL_CATALOG
 from .nemotron_page_elements_v3.model import define_model
-from .nemotron_page_elements_v3.utils import plot_sample, postprocess_preds_page_element, reformat_for_plotting
-
-from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
+from .nemotron_page_elements_v3.utils import postprocess_preds_page_element
 from ..base_layoutmodel import BaseLayoutModel
 from ...elements import Rectangle, TextBlock, Layout
 
@@ -36,7 +35,15 @@ class NemotronLayoutModel(BaseLayoutModel):
         label_map=None,
     ):
         if label_map is None:
-            label_map = {0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"}
+            # label_map = {0: "Text", 1: "Title", 2: "List", 3: "Table", 4: "Figure"}
+            label_map = {
+                0: "table",
+                1: "chart",
+                2: "title",
+                3: "infographic",
+                4: "text",
+                5: "header_footer",
+            }
 
         self.label_map = label_map
         self._create_model()
@@ -63,10 +70,10 @@ class NemotronLayoutModel(BaseLayoutModel):
             y_1 *= image_shape[0]
             y_2 *= image_shape[0]
 
-            label = self.label_map.get(label, label)
+            str_label = self.label_map[int(label)]
 
             cur_block = TextBlock(
-                Rectangle(x_1, y_1, x_2, y_2), type=label, score=score
+                Rectangle(x_1, y_1, x_2, y_2), type=str_label, score=score
             )
             layout.append(cur_block)
 
