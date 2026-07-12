@@ -26,6 +26,7 @@ from .file_utils import (
     is_vgt_available,
     is_ppdoclayoutv3_available,
     is_rfdetr_available,
+    is_detr_available,
     is_swindocseg_available,
     is_dotsocr_available,
     is_docstrum_available,
@@ -56,6 +57,7 @@ _import_structure = {
         "is_rlsa_available",
         "is_ppdoclayoutv3_available",
         "is_rfdetr_available",
+        "is_detr_available",
         "is_swindocseg_available",
         "is_paddle_available",
         "is_pytesseract_available",
@@ -94,6 +96,9 @@ if is_ppdoclayoutv3_available():
 
 if is_rfdetr_available():
     _import_structure["models.rfdetr"] = ["RFDETRLayoutModel"]
+
+if is_detr_available():
+    _import_structure["models.detr"] = ["DETRLayoutModel"]
 
 if is_swindocseg_available():
     _import_structure["models.swindocseg"] = ["SwinDocSegLayoutModel"]
