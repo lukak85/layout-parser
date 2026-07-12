@@ -107,7 +107,7 @@ class SwinDocSegLayoutModel(BaseLayoutModel):
         return layout
 
     def detect(self, path):
-        image = self.image_loader(path)
+        image = self.image_loader(path, False)
         outputs = self.model(image)
         layout = self.gather_output(outputs)
         return layout

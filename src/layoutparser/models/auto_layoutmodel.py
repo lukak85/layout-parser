@@ -28,6 +28,7 @@ from ..file_utils import (
     is_vgt_available,
     is_ppdoclayoutv3_available,
     is_rfdetr_available,
+    is_detr_available,
     is_swindocseg_available,
     is_dotsocr_available,
     is_docstrum_available,
@@ -125,6 +126,16 @@ if is_rfdetr_available():
     ALL_AVAILABLE_BACKENDS[RFDETRLayoutModel.DETECTOR_NAME] = RFDETRLayoutModel
     for dataset_name in _rfdetr_model_catalog:
         ALL_AVAILABLE_DATASETS[dataset_name].append(RFDETRLayoutModel.DETECTOR_NAME)
+    # fmt: on
+
+if is_detr_available():
+    from .detr.layoutmodel import DETRLayoutModel
+    from .detr.catalog import MODEL_CATALOG as _detr_model_catalog
+
+    # fmt: off
+    ALL_AVAILABLE_BACKENDS[DETRLayoutModel.DETECTOR_NAME] = DETRLayoutModel
+    for dataset_name in _detr_model_catalog:
+        ALL_AVAILABLE_DATASETS[dataset_name].append(DETRLayoutModel.DETECTOR_NAME)
     # fmt: on
 
 
