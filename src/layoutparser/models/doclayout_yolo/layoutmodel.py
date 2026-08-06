@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import cv2
+import numpy as np
 import torch
-
 from doclayout_yolo import YOLOv10
-from torch.backends.mkl import verbose
 
 from .catalog import MODEL_CATALOG, LABEL_MAP_CATALOG
 from ..base_layoutmodel import BaseLayoutModel
@@ -38,6 +37,8 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
         debug=False,
         label_map=None,
         verbose=False,
+        iou_threshold=0.5,
+        class_agnostic_nms=True,
     ):
         self.device = (
             "cuda"
@@ -61,10 +62,55 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
 
         self.verbose = verbose
 
+        self.iou_threshold = iou_threshold
+        self.class_agnostic_nms = class_agnostic_nms
+
         self._create_model()
 
     def _create_model(self):
         self.model = YOLOv10(self.model, verbose=self.verbose)  # load an official model
+
+    def _remove_duplicates(self, coco_results):
+        if not coco_results:
+            return coco_results
+
+        boxes = np.array([r["bbox"] for r in coco_results], dtype=float)  # x, y, w, h
+        scores = np.array([r["score"] for r in coco_results], dtype=float)
+        classes = np.array([r["category_id"] for r in coco_results])
+
+        x1 = boxes[:, 0]
+        y1 = boxes[:, 1]
+        x2 = boxes[:, 0] + boxes[:, 2]
+        y2 = boxes[:, 1] + boxes[:, 3]
+        areas = (x2 - x1) * (y2 - y1)
+
+        order = scores.argsort()[::-1]
+        keep = []
+        while order.size > 0:
+            i = order[0]
+            keep.append(int(i))
+            if order.size == 1:
+                break
+            rest = order[1:]
+
+            xx1 = np.maximum(x1[i], x1[rest])
+            yy1 = np.maximum(y1[i], y1[rest])
+            xx2 = np.minimum(x2[i], x2[rest])
+            yy2 = np.minimum(y2[i], y2[rest])
+
+            w = np.maximum(0.0, xx2 - xx1)
+            h = np.maximum(0.0, yy2 - yy1)
+            inter = w * h
+            iou = inter / (areas[i] + areas[rest] - inter + 1e-9)
+
+            if self.class_agnostic_nms:
+                suppress = iou > self.iou_threshold
+            else:
+                suppress = (iou > self.iou_threshold) & (classes[rest] == classes[i])
+
+            order = rest[~suppress]
+
+        return [coco_results[i] for i in keep]
 
     def gather_output(self, yolo_result, image_id, img_w, img_h):
         coco_results = []
@@ -89,6 +135,8 @@ class DocLayoutYOLOLayoutModel(BaseLayoutModel):
                     "score": float(score),
                 }
             )
+
+        coco_results = self._remove_duplicates(coco_results)
 
         layout_for_lp = Layout()
 
